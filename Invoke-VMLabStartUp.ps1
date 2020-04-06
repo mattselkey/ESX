@@ -15,19 +15,30 @@
 #>
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory=$false)]
     [String]
-    $ESXHost
+    $ESXHost="mskey-esx-mgmt.lab.local",
+    [Parameter(Mandatory=$false)]
+    [String]
+    $User="administrator@vsphere.local",
+    [Parameter(Mandatory=$false)]
+    [String]
+    $Pass
 )
 try {
+    $cred = Get-Credential 
     Write-Information -Message "Connecting to host"
     set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
-    connect-viserver –server $ESXHost  
+    #connect-viserver –server $ESXHost -User $User -Password $Pass 
+    connect-viserver –server $ESXHost -Credential $cred
 }
 catch {
     Write-Information -Message "error connecting to host, error is ($_)"  -InformationAction Continue
 }
+ 
+ get-vm
+ Get-Tag
+ get-vm | Get-TagAssignment | Where-Object {$_.Tag -eq "POWERMANAGED"} | Start-VM
 
-get-vm  
-
-Disconnect-VIServer  -Confirm:$false
+ 
+ Disconnect-VIServer  -Confirm:$false

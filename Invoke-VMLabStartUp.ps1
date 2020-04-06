@@ -36,9 +36,13 @@ catch {
     Write-Information -Message "error connecting to host, error is ($_)"  -InformationAction Continue
 }
  
- get-vm
- Get-Tag
- get-vm | Get-TagAssignment | Where-Object {$_.Tag -eq "POWERMANAGED"} | Start-VM
+ #get-vm
+ #Get-Tag
+ $vms = get-vm | Get-TagAssignment | Where-Object {$_.Tag -eq "POWERMANAGED"} 
 
+ foreach($vm in $vms){
+    Start-VM $vm
+
+ }
  
- Disconnect-VIServer  -Confirm:$false
+ #Disconnect-VIServer  -Confirm:$false

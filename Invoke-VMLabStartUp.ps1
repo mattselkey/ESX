@@ -38,12 +38,12 @@ catch {
  
  #get-vm
  #Get-Tag
- $vms = get-vm | Get-TagAssignment | Where-Object {$_.Tag -like "*POWERMANAGE*"} 
-
- foreach($vm in $vms){
-    Start-VM $vm
-
- }
+$VMs = Get-VM | Where-Object {Get-TagAssignment $_ | Where-Object{ $_.Tag -like "*POWERMANAGE*"}}
  
- 
+foreach ($VM in $VMs) {
+  
+    if($VM.powerstate -ne "PoweredOn"){
+    Start-VM $VM
+    }   
+} 
  #Disconnect-VIServer  -Confirm:$false

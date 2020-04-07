@@ -38,7 +38,7 @@ catch {
  
  #get-vm
  #Get-Tag
- $vms = get-vm | Get-TagAssignment | Where-Object {$_.Tag -eq "POWERMANAGED"} 
+ $vms = get-vm | Get-TagAssignment | Where-Object {$_.Tag -like "*POWERMANAGE*"} 
 
  foreach($vm in $vms){
     Start-VM $vm

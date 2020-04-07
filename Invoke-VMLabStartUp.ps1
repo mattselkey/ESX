@@ -28,6 +28,7 @@ param (
 
 BEGIN{
 try {
+    $InformationPreference = "Continue"
     #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"
     set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
@@ -35,18 +36,25 @@ try {
     #connect-viserver –server $ESXHost -Credential $cred
 }
 catch {
-    Write-Information -Message "error connecting to host, error is ($_)"  -InformationAction Continue
+    Write-Information -Message "error connecting to host, error is ($_)"
 }
  
 }
 
 PROCESS{
-
+ Write-Information -Message "Getting Power Managed VMs"
+ try{
  $VMs = Get-VM | Where-Object {Get-TagAssignment $_ | Where-Object{ $_.Tag -like "*POWERMANAGE*"}}
- 
+ }catch{
+
+ }
+
 foreach ($VM in $VMs) {
   
     if($VM.powerstate -ne "PoweredOn"){
+    
+     Write-Information -Message "Starting VM ($VM.Name)"
+
     Start-VM $VM
     }   
 } 

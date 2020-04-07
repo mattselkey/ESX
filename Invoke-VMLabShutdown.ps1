@@ -31,8 +31,8 @@ BEGIN{
         $InformationPreference = "Continue"
         #$cred = Get-Credential 
         Write-Information -Message "Connecting to host"
-        set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
-        connect-viserver –server $ESXHost -User $User -Password $Pass 
+        set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false  | Out-Null
+        connect-viserver –server $ESXHost -User $User -Password $Pass  | Out-Null
         #connect-viserver –server $ESXHost -Credential $cred
     }
     catch {
@@ -53,13 +53,14 @@ BEGIN{
          
         if($VM.powerstate -eq "PoweredOn"){
            
-            Write-Information -Message "Suspending VM ($VM)"
-            if (Get-TagAssignment VM -like "*SUSPEND*") {
-                Suspend-VM $VM 
+            
+            if (Get-TagAssignment $VM | Where-Object {$_.Tag -like "*SUSPEND*"}) {
+                Write-Information -Message "Suspending VM ($VM)"
+                Suspend-VM $VM -Confirm:$false  | Out-Null
             }
             else{
                 Write-Information -Message "Shutting down VM ($VM)"
-                Stop-VMGuest  $VM -Confirm:$false
+                Stop-VMGuest  $VM -Confirm:$false  | Out-Null
 
             }
          }   

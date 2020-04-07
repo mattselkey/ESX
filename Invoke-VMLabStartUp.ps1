@@ -31,8 +31,8 @@ try {
     $InformationPreference = "Continue"
     #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"
-    set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
-    connect-viserver –server $ESXHost -User $User -Password $Pass 
+    set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false | Out-Null
+    connect-viserver –server $ESXHost -User $User -Password $Pass | Out-Null
     #connect-viserver –server $ESXHost -Credential $cred
 }
 catch {
@@ -53,9 +53,9 @@ foreach ($VM in $VMs) {
   
     if($VM.powerstate -ne "PoweredOn"){
     
-     Write-Information -Message "Starting VM ($VM)"
+     Write-Information -Message "Starting VM $($VM)"
 
-    Start-VM $VM 
+    Start-VM $VM | Out-Null
     }   
 } 
 }

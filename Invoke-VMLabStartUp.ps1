@@ -29,6 +29,7 @@ try {
     #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"
     set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
+    Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false.
     connect-viserver –server $ESXHost -User $User -Password $Pass 
     #connect-viserver –server $ESXHost -Credential $cred
 }
@@ -46,4 +47,4 @@ catch {
  }
  
  
- #Disconnect-VIServer  -Confirm:$false
+ Disconnect-VIServer  -Confirm:$false

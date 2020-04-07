@@ -25,6 +25,8 @@ param (
     [String]
     $Pass
 )
+
+BEGIN{
 try {
     #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"
@@ -36,9 +38,11 @@ catch {
     Write-Information -Message "error connecting to host, error is ($_)"  -InformationAction Continue
 }
  
- #get-vm
- #Get-Tag
-$VMs = Get-VM | Where-Object {Get-TagAssignment $_ | Where-Object{ $_.Tag -like "*POWERMANAGE*"}}
+}
+
+PROCESS{
+
+ $VMs = Get-VM | Where-Object {Get-TagAssignment $_ | Where-Object{ $_.Tag -like "*POWERMANAGE*"}}
  
 foreach ($VM in $VMs) {
   
@@ -46,5 +50,8 @@ foreach ($VM in $VMs) {
     Start-VM $VM
     }   
 } 
+}
 
+END{
 Disconnect-VIServer  -Confirm:$false
+}

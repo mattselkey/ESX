@@ -26,11 +26,11 @@ param (
     $Pass
 )
 try {
-    $cred = Get-Credential 
+    #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"
     set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false
-    #connect-viserver –server $ESXHost -User $User -Password $Pass 
-    connect-viserver –server $ESXHost -Credential $cred
+    connect-viserver –server $ESXHost -User $User -Password $Pass 
+    #connect-viserver –server $ESXHost -Credential $cred
 }
 catch {
     Write-Information -Message "error connecting to host, error is ($_)"  -InformationAction Continue

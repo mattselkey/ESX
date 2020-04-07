@@ -53,9 +53,9 @@ foreach ($VM in $VMs) {
   
     if($VM.powerstate -ne "PoweredOn"){
     
-     Write-Information -Message "Starting VM ($VM.Name)"
+     Write-Information -Message "Starting VM ($VM)"
 
-    Start-VM $VM
+    Start-VM $VM 
     }   
 } 
 }

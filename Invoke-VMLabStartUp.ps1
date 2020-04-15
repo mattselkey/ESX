@@ -31,6 +31,7 @@ try {
     $InformationPreference = "Continue"
     #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"
+    Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false
     set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false | Out-Null
     connect-viserver –server $ESXHost -User $User -Password $Pass | Out-Null
     #connect-viserver –server $ESXHost -Credential $cred
@@ -44,9 +45,9 @@ catch {
 PROCESS{
  Write-Information -Message "Getting Power Managed VMs"
  try{
- $VMs = Get-VM | Where-Object {Get-TagAssignment $_ | Where-Object{ $_.Tag -like "*POWERMANAGE*"}}
+    $VMs = Get-VM | Where-Object {Get-TagAssignment $_ | Where-Object{ $_.Tag -like "*POWERMANAGE*"}}
  }catch{
-
+    Write-Information -Message "Error getting VM tags. Error is ($_)"
  }
 
 foreach ($VM in $VMs) {
@@ -58,6 +59,7 @@ foreach ($VM in $VMs) {
     Start-VM $VM | Out-Null
     }   
 } 
+
 }
 
 END{

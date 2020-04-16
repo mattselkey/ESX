@@ -18,13 +18,16 @@
 param (
     [Parameter(Mandatory=$false)]
     [String]
-    $ESXHost="mskey-esx-mgmt.lab.local",
+    $vCenterHost="mskey-esx-mgmt.lab.local",
     [Parameter(Mandatory=$false)]
     [String]
     $User="administrator@vsphere.local",
     [Parameter(Mandatory=$false)]
     [String]
-    $Pass
+    $Pass,
+    [Parameter(Mandatory=$false)]
+    [String]
+    $ESXHost="192.168.2.98"
 )
 BEGIN{
     try {
@@ -32,7 +35,7 @@ BEGIN{
         #$cred = Get-Credential 
         Write-Information -Message "Connecting to host"
         set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false  | Out-Null
-        connect-viserver –server $ESXHost -User $User -Password $Pass  | Out-Null
+        connect-viserver –server $vCenterHost -User $User -Password $Pass  | Out-Null
         #connect-viserver –server $ESXHost -Credential $cred
     }
     catch {
@@ -64,10 +67,23 @@ BEGIN{
 
             }
          }   
-       } 
+       }
+       
+       
+       Disconnect-VIServer -Server $vCenterHost -Confirm:$false
+       
+       connect-viserver –server $ESXHost
+       
+       $VSCAName = Get-VM  | Where-Object {$_.Name -like "*VSCA*"}
+       if($VM.powerstate -eq "PoweredOn"){
+       Stop-VMGuest $VSCAName -Confirm:$false
+       }
+     
+       Stop-VMHost -Server $ESXHost -Force -Confirm:$false
+
     }
        
-       END{
-       Disconnect-VIServer  -Confirm:$false
-       }
+    END{
+       
+    }
 

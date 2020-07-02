@@ -11,7 +11,7 @@
 .OUTPUTS
     Output (if any)
 .NOTES
-    General notes
+    This script requires PowerShell 7
 #>
 [CmdletBinding()]
 param (
@@ -29,13 +29,14 @@ param (
 BEGIN{
 
     try{
-        Get-InstalledModule -Name "Vmware.PowerCli"
+        Get-InstalledModule -Name "Vmware.PowerCli" -ErrorAction Stop
         }
         catch{
-            Install-Module -Name VMware.PowerCLI –Scope CurrentUser
+            Write-Information -Message "Error install vmware modules"
+            Install-Module -Name VMware.PowerCLI –Scope CurrentUser -Force
         
         }
-
+pause
 
     try {
 
@@ -44,7 +45,7 @@ BEGIN{
     Write-Information -Message "Connecting to host"
     Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false
     set-PowerCLIConfiguration -InvalidCertificateAction:Ignore -Confirm:$false | Out-Null
-    connect-viserver –server $ESXHost -User $User -Password $Pass | Out-Null
+    connect-viserver -server $ESXHost -User $User -Password $Pass | Out-Null
     #connect-viserver –server $ESXHost -Credential $cred
 }
 catch {

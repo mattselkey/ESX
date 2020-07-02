@@ -27,7 +27,18 @@ param (
 )
 
 BEGIN{
-try {
+
+    try{
+        Get-InstalledModule -Name "Vmware.PowerCli"
+        }
+        catch{
+            Install-Module -Name VMware.PowerCLI –Scope CurrentUser
+        
+        }
+
+
+    try {
+
     $InformationPreference = "Continue"
     #$cred = Get-Credential 
     Write-Information -Message "Connecting to host"

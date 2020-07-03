@@ -36,7 +36,6 @@ BEGIN{
             Install-Module -Name VMware.PowerCLI –Scope CurrentUser -Force
         
         }
-pause
 
     try {
 
